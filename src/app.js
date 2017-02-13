@@ -1,4 +1,5 @@
 import {Observable} from "rxjs/Rx";
+import {ReplaySubject} from "rxjs/Rx";
 
 const startButton = document.querySelector('#start');
 const stopButton = document.querySelector('#stop');
@@ -281,7 +282,7 @@ Observable.combineLatest(timer$, inputStream$,
 /*repeat - we can use it for create infinite observable
  * which will never be done, we should use thi before subscribe
   * function*/
-let data = {count: 0};
+/*let data = {count: 0};
 let inc = (acc) => ({count: acc.count + 1});
 let res = (acc) => ({count: 0});
 
@@ -315,4 +316,28 @@ Observable.combineLatest(timer$, inputStream$,
     x => console.log(x),
     err => console.log(err),
     () => console.log('Complete')
-  );
+  );*/
+
+
+/*------------------------------------------*/
+/*bufferCount(2, 5) - позволяет созанять данные с предыдущего собыития
+* и сравнивать их с новыми, отдает данные в виде массива
+* второй параметр говорит посли скольки событий тригерить свой ивент*/
+
+/*debounceTime(500) - делает почти тоже что и delay только
+* при поступлении события, запускает таумер задердки, но при поступлнеии
+* слудующего - отправляет событие раньше окончания таумера и запускает его с начала*/
+
+/*ReplaySubject - возволяет создать обсервбл без начального значения*/
+let starter$ = new ReplaySubject();
+starter$
+    .bufferCount(2, 5)
+    .do(x => console.log(x))
+    .subscribe((() => {}));
+
+input$
+    .map(event => event.target.value)
+    .subscribe(x => starter$.next(x));
+
+
+/*----------------------------------------------*/
